@@ -18,7 +18,7 @@ function checkdep() {
 echo " * Testing for dependencies..."
 
 
-checkdep npm "NPM is needed to set up webui"
+command -v npm >/dev/null 2>&1 || command -v yarn >/dev/null 2>&1 || error "NPM or yarn is needed to set up webui"
 checkdep git "Git is required to clone individual subrepos"
 
 echo " * Cloning repositories..."
@@ -39,14 +39,21 @@ function sbterr() {
     echo "We would love to set the project up for you, but it seems like you don't have sbt installed."
     echo "Please install sbt and execute $ sbt ';update;fetch;update'"
     echo "Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation"
-    exit
 }
 
-command -v sbt >/dev/null 2>&1 || sbterr
+command -v sbt >/dev/null 2>&1 \
+  && sbt ";update;fetch;update" \
+  || sbterr
 
 # update project first, then fetch plugins; then update the whole thing again
 # (including plugins this time)
-sbt ";update;fetch;update"
+
+echo " * Setting up GUI..."
+
+cd gui
+
+command -v npm >/dev/null 2>&1 && npm install
+command -v yarn >/dev/null 2>&1 && yarn
 
 # done?
 echo " * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)"
