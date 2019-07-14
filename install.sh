@@ -36,9 +36,9 @@ cd chatoverflow
 echo " * Refreshing using sbt..."
 
 function sbterr() {
-    echo "We would love to set the project up for you, but it seems like you don't have sbt installed."
-    echo "Please install sbt and execute $ sbt ';update;fetch;update'"
-    echo "Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation"
+    echo " ! We would love to set the project up for you, but it seems like you don't have sbt installed."
+    echo " ! Please install sbt and execute $ sbt ';update;fetch;update'"
+    echo " ! Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation"
 }
 
 command -v sbt >/dev/null 2>&1 \
