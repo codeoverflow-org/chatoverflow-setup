@@ -52,8 +52,13 @@ echo " * Setting up GUI..."
 
 cd gui
 
-command -v npm >/dev/null 2>&1 && npm install
-command -v yarn >/dev/null 2>&1 && yarn
+function finished() {
+  # done?
+  echo " * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)"
+  exit
+}
 
-# done?
-echo " * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)"
+# don't install the project twice, lol
+# prefer yarn cause yarn is better, lol
+command -v yarn >/dev/null 2>&1 && yarn && finished
+command -v npm >/dev/null 2>&1 && npm install && finished
