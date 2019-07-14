@@ -11,7 +11,7 @@ function clone() {
 }
 
 function checkdep() {
-  test -n `which $1` \
+  command -v $1 >/dev/null 2>&1 \
     || error "$1 not found! $2"
 }
 
@@ -19,23 +19,30 @@ echo " * Testing for dependencies..."
 
 
 checkdep npm "NPM is needed to set up webui"
-checkdep sbt "This project is built by sbt"
 checkdep git "Git is required to clone individual subrepos"
 
 echo " * Cloning repositories..."
 
-test -e chatoverflow && error "The chatoverflow directory already exists!"
-
-clone codeoverflow-org/chatoverflow chatoverflow
+test -e chatoverflow || clone codeoverflow-org/chatoverflow chatoverflow
 # todo: make the clones parallel?
-clone codeoverflow-org/chatoverflow-api chatoverflow/api
-clone codeoverflow-org/chatoverflow-gui chatoverflow/gui
-clone codeoverflow-org/chatoverflow-plugins chatoverflow/plugins-public
+test -e chatoverflow/api || clone codeoverflow-org/chatoverflow-api chatoverflow/api
+test -e chatoverflow/gui || clone codeoverflow-org/chatoverflow-gui chatoverflow/gui
+test -e chatoverflow/plugins-public || clone codeoverflow-org/chatoverflow-plugins chatoverflow/plugins-public
 
 # switching to chatoverflow dir
 cd chatoverflow
 
+
 echo " * Refreshing using sbt..."
+
+function sbterr() {
+    echo "We would love to set the project up for you, but it seems like you don't have sbt installed."
+    echo "Please install sbt and execute $ sbt ';update;fetch;update'"
+    echo "Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation"
+    exit
+}
+
+command -v sbt >/dev/null 2>&1 || sbterr
 
 # update project first, then fetch plugins; then update the whole thing again
 # (including plugins this time)
