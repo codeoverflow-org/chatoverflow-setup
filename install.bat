@@ -11,19 +11,29 @@ IF "%MISSING_REQUIREMENT%"=="true" (
     ECHO * All requirements are installed
 )
 
+SET "npm=true"
 SET "yarn=true"
 CALL :check_optional_requirement yarn
 IF "%MISSING_REQUIREMENT%"=="true" (
-    SET "MISSING_REQUIREMENT=false"
-    CALL :check_optional_requirement npm
-    IF "%MISSING_REQUIREMENT%"=="true" (
-        ECHO ! NPM or yarn is needed to set up webui
-        PAUSE
-        exit /b
-    ) ELSE (
-        SET "yarn=false"
-    ) 
+    ECHO * Note: Yarn is not installed.
+    SET "yarn=false"
 )
+
+set "MISSING_REQUIREMENT=false"
+CALL :check_optional_requirement npm
+IF "%MISSING_REQUIREMENT%"=="true" (
+    ECHO * Note: npm is not installed.
+    SET "npm=false"
+) 
+
+IF "%npm%"=="false" (
+	IF "%yarn%"=="false" ( 
+		ECHO ! NPM or yarn is needed to set up webui
+		PAUSE
+		exit /b
+	)
+)
+
 
 CALL :check_folder chatoverflow https://github.com/codeoverflow-org/chatoverflow chatoverflow
 CALL :check_folder chatoverflow/api https://github.com/codeoverflow-org/chatoverflow-api chatoverflow/api
@@ -35,9 +45,9 @@ cd chatoverflow/
 SET "MISSING_REQUIREMENT=false"
 CALL :check_optional_requirement sbt
 IF "%MISSING_REQUIREMENT%"=="true" (
-    echo ! We would love to set the project up for you, but it seems like you don't have sbt installed.
-    echo ! Please install sbt and execute $ sbt ';update;fetch;update'
-    echo ! Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation
+    ECHO ! We would love to set the project up for you, but it seems like you don't have sbt installed.
+    ECHO ! Please install sbt and execute $ sbt ';update;fetch;update'
+    ECHO ! Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation
 ) ELSE (
     ECHO * Found sbt.
     sbt ";update;fetch;update"
@@ -45,13 +55,15 @@ IF "%MISSING_REQUIREMENT%"=="true" (
 
 cd gui/
 
+ECHO * Installing GUI (this may take a while...)
+
 IF "%yarn%"=="true" (
     yarn
 ) ELSE (
     npm install
 )
 
-echo * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)
+ECHO * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)
 
 
 PAUSE
