@@ -34,7 +34,6 @@ IF "%npm%"=="false" (
 	)
 )
 
-
 CALL :check_folder chatoverflow https://github.com/codeoverflow-org/chatoverflow chatoverflow
 CALL :check_folder chatoverflow/api https://github.com/codeoverflow-org/chatoverflow-api chatoverflow/api
 CALL :check_folder chatoverflow/gui https://github.com/codeoverflow-org/chatoverflow-gui chatoverflow/gui
@@ -50,7 +49,7 @@ IF "%MISSING_REQUIREMENT%"=="true" (
     ECHO ! Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation
 ) ELSE (
     ECHO * Found sbt.
-    sbt ";update;fetch;update"
+    CALL sbt ";update;fetch;update"
 )
 
 cd gui/
@@ -58,14 +57,14 @@ cd gui/
 ECHO * Installing GUI (this may take a while...)
 
 IF "%yarn%"=="true" (
-    yarn
+    ECHO * Using yarn...
+    CALL yarn
 ) ELSE (
-    npm install
+    ECHO * Using npm... 
+    CALL npm install
 )
 
 ECHO * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)
-
-
 PAUSE
 exit /b
 
