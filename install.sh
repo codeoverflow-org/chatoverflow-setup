@@ -15,6 +15,29 @@ function checkdep() {
     || error "$1 not found! $2"
 }
 
+function parse_options() {
+  DEV="false"
+  while true; do
+    case "$1" in
+      --dev) DEV="true";;
+      "") break;;
+    esac
+    shift
+  done
+}
+
+function checkout_dev() {
+  if [ "$DEV" == "true" ]; then
+    echo "* Switching to develop  branch"
+    git checkout develop
+    git -C api checkout develop
+    git -C gui checkout develop
+    git -C plugins-public checkout develop
+  fi
+}
+
+parse_options $*
+
 echo " * Testing for dependencies..."
 
 
@@ -54,6 +77,8 @@ cd gui
 
 function finished() {
   # done?
+  cd ..
+  checkout_dev
   echo " * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)"
   exit
 }
