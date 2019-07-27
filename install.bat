@@ -1,6 +1,10 @@
 @echo off
 set "MISSING_REQUIREMENT=false"
 
+set "DEV=false"
+
+CALL :parse_options %*
+
 CALL :check_requirement git Git
 
 IF "%MISSING_REQUIREMENT%"=="true" (
@@ -64,6 +68,16 @@ IF "%yarn%"=="true" (
     CALL npm install
 )
 
+cd ..
+
+IF "%DEV%"=="true" (
+    ECHO * Switching to develop  branch
+    CALL git checkout develop
+    CALL git -C api checkout develop
+    CALL git -C gui checkout develop
+    CALL git -C plugins-public checkout develop
+)
+
 ECHO * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)
 PAUSE
 exit /b
@@ -98,4 +112,14 @@ IF "%MISSING_REQUIREMENT%"=="true" (
     SET "MISSING_REQUIREMENT=true"
 ) 
 
+exit /b
+
+:parse_options
+IF NOT "%1"=="" (
+    IF "%1"=="--dev" (
+        SET "DEV=true"
+    )
+    SHIFT
+    GOTO :parse_options
+)
 exit /b
