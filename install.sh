@@ -36,7 +36,7 @@ function checkout_dev() {
   fi
 }
 
-parse_options $*
+parse_options $@
 
 echo " * Testing for dependencies..."
 
