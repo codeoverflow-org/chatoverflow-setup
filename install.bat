@@ -2,6 +2,7 @@
 set "MISSING_REQUIREMENT=false"
 
 set "DEV=false"
+set "BUILD=false"
 
 CALL :parse_options %*
 
@@ -17,6 +18,7 @@ IF "%MISSING_REQUIREMENT%"=="true" (
 
 SET "npm=true"
 SET "yarn=true"
+SET "sbt=true"
 CALL :check_optional_requirement yarn
 IF "%MISSING_REQUIREMENT%"=="true" (
     ECHO * Note: Yarn is not installed.
@@ -51,6 +53,7 @@ IF "%MISSING_REQUIREMENT%"=="true" (
     ECHO ! We would love to set the project up for you, but it seems like you don't have sbt installed.
     ECHO ! Please install sbt and execute $ sbt ';update;fetch;update'
     ECHO ! Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation
+    SET "sbt=false"
 ) ELSE (
     ECHO * Found sbt.
     CALL sbt ";update;fetch;update"
@@ -76,6 +79,13 @@ IF "%DEV%"=="true" (
     CALL git -C api checkout develop
     CALL git -C gui checkout develop
     CALL git -C plugins-public checkout develop
+)
+
+IF "%BUILD%"=="true" (
+    IF "%sbt%"=="true" (
+        ECHO * Building Chatoverflow with Advanced Build Configuration
+        CALL sbt ";clean;compile;gui;fetch;reload;version;package;copy"
+    )
 )
 
 ECHO * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)
@@ -118,6 +128,9 @@ exit /b
 IF NOT "%1"=="" (
     IF "%1"=="--dev" (
         SET "DEV=true"
+    )
+    IF "%1"=="--build" (
+        SET "BUILD=true"
     )
     SHIFT
     GOTO :parse_options

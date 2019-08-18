@@ -17,9 +17,11 @@ function checkdep() {
 
 function parse_options() {
   DEV="false"
+  BUILD="false"
   while true; do
     case "$1" in
       --dev) DEV="true";;
+      --build) BUILD="true";;
       "") break;;
     esac
     shift
@@ -33,6 +35,14 @@ function checkout_dev() {
     git -C api checkout develop
     git -C gui checkout develop
     git -C plugins-public checkout develop
+  fi
+}
+
+function build() {
+  if [ "$BUILD" == "true" ]; then
+    command -v sbt >/dev/null 2>&1 \
+      && echo "* Building Chatoverflow with Advanced Build Configuration" \
+      && sbt ";clean;compile;gui;fetch;reload;version;package;copy"
   fi
 }
 
@@ -79,6 +89,7 @@ function finished() {
   # done?
   cd ..
   checkout_dev
+  build
   echo " * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)"
   exit
 }
