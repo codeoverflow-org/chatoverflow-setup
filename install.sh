@@ -30,11 +30,12 @@ function parse_options() {
 
 function checkout_dev() {
   if [ "$DEV" == "true" ]; then
-    echo "* Switching to develop  branch"
+    echo "* Switching to develop branch"
     git checkout develop
     git -C api checkout develop
     git -C gui checkout develop
     git -C plugins-public checkout develop
+    git -C launcher checkout develop
   fi
 }
 
@@ -61,6 +62,7 @@ test -e chatoverflow || clone codeoverflow-org/chatoverflow chatoverflow
 test -e chatoverflow/api || clone codeoverflow-org/chatoverflow-api chatoverflow/api
 test -e chatoverflow/gui || clone codeoverflow-org/chatoverflow-gui chatoverflow/gui
 test -e chatoverflow/plugins-public || clone codeoverflow-org/chatoverflow-plugins chatoverflow/plugins-public
+test -e chatoverflow/launcher || clone codeoverflow-org/chatoverflow-launcher chatoverflow/launcher
 
 # switching to chatoverflow dir
 cd chatoverflow
