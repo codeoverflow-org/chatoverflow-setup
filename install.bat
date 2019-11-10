@@ -75,10 +75,10 @@ cd ..
 
 IF "%DEV%"=="true" (
     ECHO * Switching to develop  branch
-    CALL git checkout develop
-    CALL git -C api checkout develop
-    CALL git -C gui checkout develop
-    CALL git -C plugins-public checkout develop
+    CALL git checkout -f develop
+    CALL git -C api checkout -f develop
+    CALL git -C gui checkout -f develop
+    CALL git -C plugins-public checkout -f develop
 )
 
 IF "%BUILD%"=="true" (

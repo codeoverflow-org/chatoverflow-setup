@@ -31,10 +31,10 @@ function parse_options() {
 function checkout_dev() {
   if [ "$DEV" == "true" ]; then
     echo "* Switching to develop  branch"
-    git checkout develop
-    git -C api checkout develop
-    git -C gui checkout develop
-    git -C plugins-public checkout develop
+    git checkout -f develop
+    git -C api checkout -f develop
+    git -C gui checkout -f develop
+    git -C plugins-public checkout -f develop
   fi
 }
 
