@@ -47,6 +47,14 @@ CALL :check_folder chatoverflow/plugins-public https://github.com/codeoverflow-o
 
 cd chatoverflow/
 
+IF "%DEV%"=="true" (
+    ECHO * Switching to develop branch
+    CALL git checkout -f develop
+    CALL git -C api checkout -f develop
+    CALL git -C gui checkout -f develop
+    CALL git -C plugins-public checkout -f develop
+)
+
 SET "MISSING_REQUIREMENT=false"
 CALL :check_optional_requirement sbt
 IF "%MISSING_REQUIREMENT%"=="true" (
@@ -72,14 +80,6 @@ IF "%yarn%"=="true" (
 )
 
 cd ..
-
-IF "%DEV%"=="true" (
-    ECHO * Switching to develop  branch
-    CALL git checkout -f develop
-    CALL git -C api checkout -f develop
-    CALL git -C gui checkout -f develop
-    CALL git -C plugins-public checkout -f develop
-)
 
 IF "%BUILD%"=="true" (
     IF "%sbt%"=="true" (

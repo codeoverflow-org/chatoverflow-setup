@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function error() {
-  echo " ! $@"
+  echo " ! $@" >&2
   exit 1
 }
 
@@ -30,12 +30,25 @@ function parse_options() {
 
 function checkout_dev() {
   if [ "$DEV" == "true" ]; then
-    echo "* Switching to develop  branch"
+    echo "* Switching to develop branch"
     git checkout -f develop
     git -C api checkout -f develop
     git -C gui checkout -f develop
     git -C plugins-public checkout -f develop
   fi
+}
+
+function guiInstall() {
+  echo " * Setting up GUI..."
+  cd gui
+  # don't install the project twice, lol
+  # prefer yarn cause yarn is better, lol
+  if command -v yarn; then
+    yarn
+  elif command -v npm; then
+    npm install
+  fi
+  cd ..
 }
 
 function build() {
@@ -65,6 +78,7 @@ test -e chatoverflow/plugins-public || clone codeoverflow-org/chatoverflow-plugi
 # switching to chatoverflow dir
 cd chatoverflow
 
+checkout_dev
 
 echo " * Refreshing using sbt..."
 
@@ -74,27 +88,13 @@ function sbterr() {
     echo " ! Or follow the guide at https://github.com/codeoverflow-org/chatoverflow/wiki/Installation"
 }
 
+# update project first, then fetch plugins; then update the whole thing again
+# (including plugins this time)
 command -v sbt >/dev/null 2>&1 \
   && sbt ";update;fetch;update" \
   || sbterr
 
-# update project first, then fetch plugins; then update the whole thing again
-# (including plugins this time)
+guiInstall || error "GUI install failed. Not trying to do anything further. Exiting..."
 
-echo " * Setting up GUI..."
-
-cd gui
-
-function finished() {
-  # done?
-  cd ..
-  checkout_dev
-  build
-  echo " * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)"
-  exit
-}
-
-# don't install the project twice, lol
-# prefer yarn cause yarn is better, lol
-command -v yarn >/dev/null 2>&1 && yarn && finished
-command -v npm >/dev/null 2>&1 && npm install && finished
+build
+echo " * Success! You can now open the project in IntelliJ (or whatever IDE you prefer)"
