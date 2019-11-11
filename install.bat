@@ -44,6 +44,7 @@ CALL :check_folder chatoverflow https://github.com/codeoverflow-org/chatoverflow
 CALL :check_folder chatoverflow/api https://github.com/codeoverflow-org/chatoverflow-api chatoverflow/api
 CALL :check_folder chatoverflow/gui https://github.com/codeoverflow-org/chatoverflow-gui chatoverflow/gui
 CALL :check_folder chatoverflow/plugins-public https://github.com/codeoverflow-org/chatoverflow-plugins chatoverflow/plugins-public
+CALL :check_folder chatoverflow/launcher https://github.com/codeoverflow-org/chatoverflow-launcher chatoverflow/launcher
 
 cd chatoverflow/
 
@@ -53,6 +54,7 @@ IF "%DEV%"=="true" (
     CALL git -C api checkout -f develop
     CALL git -C gui checkout -f develop
     CALL git -C plugins-public checkout -f develop
+    CALL git -C launcher checkout develop
 )
 
 SET "MISSING_REQUIREMENT=false"
