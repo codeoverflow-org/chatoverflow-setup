@@ -35,6 +35,7 @@ function checkout_dev() {
     git -C api checkout -f develop
     git -C gui checkout -f develop
     git -C plugins-public checkout -f develop
+    git -C launcher checkout -f develop
   fi
 }
 
@@ -74,6 +75,7 @@ test -e chatoverflow || clone codeoverflow-org/chatoverflow chatoverflow
 test -e chatoverflow/api || clone codeoverflow-org/chatoverflow-api chatoverflow/api
 test -e chatoverflow/gui || clone codeoverflow-org/chatoverflow-gui chatoverflow/gui
 test -e chatoverflow/plugins-public || clone codeoverflow-org/chatoverflow-plugins chatoverflow/plugins-public
+test -e chatoverflow/launcher || clone codeoverflow-org/chatoverflow-launcher chatoverflow/launcher
 
 # switching to chatoverflow dir
 cd chatoverflow
